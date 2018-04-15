@@ -30,8 +30,10 @@ always begin
 end
 
 initial begin
-   rst_n = 0; #HF_CYCL;
-   rst_n = 1; #(CYCL*4 + HF_CYCL);
+   rst_n = 0; #CYCL;
+   rst_n = 1; @ (lfu_finder_01.access_time_2 == 2'd2);
+   rst_n = 0; #CYCL;
+   rst_n = 1; @ (flag == 8'hFF); @ (flag == 8'hFF); @ (flag == 8'hFF); @ (flag == 8'hFF); @ (lfu_finder_01.access_time_3 == 2'd2);
    rst_n = 0; #CYCL;
    rst_n = 1;
 
@@ -47,39 +49,62 @@ initial begin
 end
 
 initial begin
-    #1          ref_buf_numbr = 2'd0;
-    #(HF_CYCL)ref_buf_numbr = 2'd1;
-    #(CYCL)   ref_buf_numbr = 2'd3;
-    #(CYCL)   ref_buf_numbr = 2'd2;
-    #(CYCL)   ref_buf_numbr = 2'd1;
-    #(CYCL)   ref_buf_numbr = 2'd0;
-    #(CYCL)   ref_buf_numbr = 2'd0;
-    #(CYCL)   ref_buf_numbr = 2'd2;
-    #(CYCL)   ref_buf_numbr = 2'd0;
-    #(CYCL)   ref_buf_numbr = 2'd2;
-    #(CYCL)   ref_buf_numbr = 2'd3;
-    #(CYCL)   ref_buf_numbr = 2'd3;
-    #(CYCL)   ref_buf_numbr = 2'd1;
-    #(CYCL)   ref_buf_numbr = 2'd1;
-    #(CYCL)   ref_buf_numbr = 2'd0;
-    #(CYCL)   ref_buf_numbr = 2'd2;
-    #(CYCL)   ref_buf_numbr = 2'd0;
-    #(CYCL)   ref_buf_numbr = 2'd1;
-    #(CYCL)   ref_buf_numbr = 2'd3;
-    #(CYCL)   ref_buf_numbr = 2'd0;
-    #(CYCL)   ref_buf_numbr = 2'd1;
-    #(CYCL)   ref_buf_numbr = 2'd0;
-    #(CYCL)   ref_buf_numbr = 2'd2;
-    #(CYCL)   ref_buf_numbr = 2'd1;
+                                              ref_buf_numbr = 2'd0;
+    @ (lfu_finder_01.access_time_0 == 2'd3)   ref_buf_numbr = 2'd1;
+	@ (lfu_finder_01.access_time_1 == 2'd2)   ref_buf_numbr = 2'd3;
+	@ (lfu_finder_01.access_time_3 == 2'd3)   ref_buf_numbr = 2'd2;
+	
+	@ (rst_n == 0)                            ref_buf_numbr = 2'd0;
+	@ (lfu_finder_01.access_time_0 == 2'd2)   ref_buf_numbr = 2'd2;
+	@ (lfu_finder_01.access_time_2 == 2'd2)   ref_buf_numbr = 2'd1;
+	@ (lfu_finder_01.access_time_1 == 2'd3)   ref_buf_numbr = 2'd3;
+	@ (lfu_finder_01.access_time_3 == 2'd2)   ref_buf_numbr = 2'd2;
+	@ (lfu_finder_01.access_time_2 == 2'd3)   ref_buf_numbr = 2'd3;
+	@ (lfu_finder_01.access_time_3 == 2'd3)   ref_buf_numbr = 2'd0;
+	//special case
+	@ (lfu_finder_01.access_time_0 == 2'd3)   ref_buf_numbr = 2'd1;//#1
+	@ (lfu_finder_01.access_time_1 == 2'd3)   ref_buf_numbr = 2'd0;
+	@ (lfu_finder_01.access_time_0 == 2'd3)   ref_buf_numbr = 2'd2;
+	@ (lfu_finder_01.access_time_2 == 2'd3)   ref_buf_numbr = 2'd3;
+	@ (lfu_finder_01.access_time_3 == 2'd3)   ref_buf_numbr = 2'd0;//#0
+	@ (lfu_finder_01.access_time_0 == 2'd3)   ref_buf_numbr = 2'd1;
+	@ (lfu_finder_01.access_time_1 == 2'd3)   ref_buf_numbr = 2'd2;
+	@ (lfu_finder_01.access_time_2 == 2'd3)   ref_buf_numbr = 2'd3;
+	@ (lfu_finder_01.access_time_3 == 2'd3)   ref_buf_numbr = 2'd2;//#2
+	@ (lfu_finder_01.access_time_2 == 2'd3)   ref_buf_numbr = 2'd3;
+	@ (lfu_finder_01.access_time_3 == 2'd3)   ref_buf_numbr = 2'd1;
+	@ (lfu_finder_01.access_time_1 == 2'd3)   ref_buf_numbr = 2'd0;
+	@ (lfu_finder_01.access_time_0 == 2'd3)   ref_buf_numbr = 2'd3;//#3
+	//request case
+	@ (rst_n == 0)                            ref_buf_numbr = 2'd0;
+	@ (lfu_finder_01.access_time_0 == 2'd2);
+	@ (lfu_finder_01.buf_num_replc == 2'd1)   ref_buf_numbr = 2'd1;
+	@ (lfu_finder_01.access_time_1 == 2'd2);
+	@ (lfu_finder_01.buf_num_replc == 2'd2)   ref_buf_numbr = 2'd2;
+	@ (lfu_finder_01.access_time_2 == 2'd2);
+	@ (lfu_finder_01.buf_num_replc == 2'd3)   ref_buf_numbr = 2'd3;
+	@ (lfu_finder_01.access_time_3 == 2'd2);
+	@ (lfu_finder_01.buf_num_replc == 2'd0)   ref_buf_numbr = 2'd0;
+	
+	
     #(CYCL*4) $finish;
 end
 
 initial begin 
-                          new_buf_req = 0;
-    #(CYCL)               new_buf_req = 1;
-    #(CYCL)               new_buf_req = 0;
-    #(CYCL*12)            new_buf_req = 1;
-    #(CYCL*2)             new_buf_req = 0;
+                                              new_buf_req = 0;
+	@ (flag == 8'hFF);
+	@ (flag == 8'hFF);
+	@ (flag == 8'hFF);
+	@ (flag == 8'hFF);
+	@ (lfu_finder_01.access_time_0 == 2'd2)   new_buf_req = 1;
+	@ (lfu_finder_01.buf_num_replc == 2'd1)   new_buf_req = 0;
+	@ (lfu_finder_01.access_time_1 == 2'd2)   new_buf_req = 1;
+	@ (lfu_finder_01.buf_num_replc == 2'd2)   new_buf_req = 0;
+	@ (lfu_finder_01.access_time_1 == 2'd2)   new_buf_req = 1;
+	@ (lfu_finder_01.buf_num_replc == 2'd3)   new_buf_req = 0;
+	@ (lfu_finder_01.access_time_3 == 2'd2)   new_buf_req = 1;
+	@ (lfu_finder_01.buf_num_replc == 2'd0)   new_buf_req = 0;
+	
 end
 endmodule
 
