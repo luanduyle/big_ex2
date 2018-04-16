@@ -31,7 +31,7 @@ end
 
 initial begin
    rst_n = 0; #CYCL;
-   rst_n = 1; @ (lfu_finder_01.access_time_2 == 2'd2);
+   rst_n = 1; @ (lfu_finder_01.access_time[5:4] == 2'd2);
    rst_n = 0; #CYCL;
    rst_n = 1; @ (flag == 8'hFF); @ (flag == 8'hFF); @ (flag == 8'hFF); @ (flag == 8'hFF); @ (lfu_finder_01.access_time_3 == 2'd2);
    rst_n = 0; #CYCL;
@@ -49,43 +49,56 @@ initial begin
 end
 
 initial begin
-                                              ref_buf_numbr = 2'd0;
-    @ (lfu_finder_01.access_time_0 == 2'd3)   ref_buf_numbr = 2'd1;
-	@ (lfu_finder_01.access_time_1 == 2'd2)   ref_buf_numbr = 2'd3;
-	@ (lfu_finder_01.access_time_3 == 2'd3)   ref_buf_numbr = 2'd2;
+                                                 ref_buf_numbr = 2'd0;
+    @ (lfu_finder_01.access_time[1:0] == 2'd3)   ref_buf_numbr = 2'd1;
+	@ (lfu_finder_01.access_time[3:2] == 2'd2)   ref_buf_numbr = 2'd3;
+	@ (lfu_finder_01.access_time[7:6] == 2'd3)   ref_buf_numbr = 2'd2;
 	
-	@ (rst_n == 0)                            ref_buf_numbr = 2'd0;
-	@ (lfu_finder_01.access_time_0 == 2'd2)   ref_buf_numbr = 2'd2;
-	@ (lfu_finder_01.access_time_2 == 2'd2)   ref_buf_numbr = 2'd1;
-	@ (lfu_finder_01.access_time_1 == 2'd3)   ref_buf_numbr = 2'd3;
-	@ (lfu_finder_01.access_time_3 == 2'd2)   ref_buf_numbr = 2'd2;
-	@ (lfu_finder_01.access_time_2 == 2'd3)   ref_buf_numbr = 2'd3;
-	@ (lfu_finder_01.access_time_3 == 2'd3)   ref_buf_numbr = 2'd0;
+	@ (rst_n == 0)                               ref_buf_numbr = 2'd0;
 	//special case
-	@ (lfu_finder_01.access_time_0 == 2'd3)   ref_buf_numbr = 2'd1;//#1
-	@ (lfu_finder_01.access_time_1 == 2'd3)   ref_buf_numbr = 2'd0;
-	@ (lfu_finder_01.access_time_0 == 2'd3)   ref_buf_numbr = 2'd2;
-	@ (lfu_finder_01.access_time_2 == 2'd3)   ref_buf_numbr = 2'd3;
-	@ (lfu_finder_01.access_time_3 == 2'd3)   ref_buf_numbr = 2'd0;//#0
-	@ (lfu_finder_01.access_time_0 == 2'd3)   ref_buf_numbr = 2'd1;
-	@ (lfu_finder_01.access_time_1 == 2'd3)   ref_buf_numbr = 2'd2;
-	@ (lfu_finder_01.access_time_2 == 2'd3)   ref_buf_numbr = 2'd3;
-	@ (lfu_finder_01.access_time_3 == 2'd3)   ref_buf_numbr = 2'd2;//#2
-	@ (lfu_finder_01.access_time_2 == 2'd3)   ref_buf_numbr = 2'd3;
-	@ (lfu_finder_01.access_time_3 == 2'd3)   ref_buf_numbr = 2'd1;
-	@ (lfu_finder_01.access_time_1 == 2'd3)   ref_buf_numbr = 2'd0;
-	@ (lfu_finder_01.access_time_0 == 2'd3)   ref_buf_numbr = 2'd3;//#3
-	//request case
-	@ (rst_n == 0)                            ref_buf_numbr = 2'd0;
-	@ (lfu_finder_01.access_time_0 == 2'd2);
-	@ (lfu_finder_01.buf_num_replc == 2'd1)   ref_buf_numbr = 2'd1;
-	@ (lfu_finder_01.access_time_1 == 2'd2);
-	@ (lfu_finder_01.buf_num_replc == 2'd2)   ref_buf_numbr = 2'd2;
-	@ (lfu_finder_01.access_time_2 == 2'd2);
-	@ (lfu_finder_01.buf_num_replc == 2'd3)   ref_buf_numbr = 2'd3;
-	@ (lfu_finder_01.access_time_3 == 2'd2);
-	@ (lfu_finder_01.buf_num_replc == 2'd0)   ref_buf_numbr = 2'd0;
+	@ (lfu_finder_01.access_time[1:0] == 2'd3)   ref_buf_numbr = 2'd1;//#0
+	@ (lfu_finder_01.access_time[3:2] == 2'd3)   ref_buf_numbr = 2'd2;
+	@ (lfu_finder_01.access_time[5:4] == 2'd3)   ref_buf_numbr = 2'd3;
+	@ (lfu_finder_01.access_time[7:6] == 2'd3)   ref_buf_numbr = 2'd0;
 	
+	@ (lfu_finder_01.access_time[1:0] == 2'd3)   ref_buf_numbr = 2'd1;//#1
+	@ (lfu_finder_01.access_time[3:2] == 2'd3)   ref_buf_numbr = 2'd2;
+	@ (lfu_finder_01.access_time[5:4] == 2'd3)   ref_buf_numbr = 2'd3;
+	@ (lfu_finder_01.access_time[7:6] == 2'd3)   ref_buf_numbr = 2'd1;
+	
+	@ (lfu_finder_01.access_time[3:2] == 2'd3)   ref_buf_numbr = 2'd0;//#2	
+	@ (lfu_finder_01.access_time[1:0] == 2'd3)   ref_buf_numbr = 2'd2;
+	@ (lfu_finder_01.access_time[5:4] == 2'd3)   ref_buf_numbr = 2'd3;
+	@ (lfu_finder_01.access_time[7:6] == 2'd3)   ref_buf_numbr = 2'd2;
+	
+	@ (lfu_finder_01.access_time[5:4] == 2'd3)   ref_buf_numbr = 2'd3;//#3
+	@ (lfu_finder_01.access_time[7:6] == 2'd3)   ref_buf_numbr = 2'd0;
+	@ (lfu_finder_01.access_time[1:0] == 2'd3)   ref_buf_numbr = 2'd1;
+	@ (lfu_finder_01.access_time[3:2] == 2'd3)   ref_buf_numbr = 2'd3;
+	
+	//request case
+	@ (rst_n == 0)                                 ref_buf_numbr = 2'd0;//#1 2111
+	@ (lfu_finder_01.access_time[1:0] == 2'd2);
+	@ (new_buf_req = 1)                            ref_buf_numbr = 2'd1;//#2 2211
+	@ (lfu_finder_01.access_time[3:2] == 2'd2);
+	@ (new_buf_req = 1)                            ref_buf_numbr = 2'd2;//#3 2221
+	@ (lfu_finder_01.access_time[5:4] == 2'd2);
+	@ (new_buf_req = 1)                            ref_buf_numbr = 2'd3;//#0 2222
+	@ (lfu_finder_01.access_time[5:4] == 2'd3);
+	@ (new_buf_req = 1)                            ref_buf_numbr = 2'd0;//#1 3222
+	@ (lfu_finder_01.access_time[1:0] == 2'd3);
+	@ (new_buf_req = 1)                            ref_buf_numbr = 2'd1;//#2 3323
+    @ (lfu_finder_01.access_time[1:0] == 2'd3);    ref_buf_numbr = 2'd3;
+	@ (lfu_finder_01.access_time[7:6] == 2'd3);
+	@ (new_buf_req = 1)                            ref_buf_numbr = 2'd2;//#0 3333
+	@ (lfu_finder_01.access_time[5:4] == 2'd3);
+	
+	@ (new_buf_req = 1)                            ref_buf_numbr = 2'd0;
+	@ (lfu_finder_01.access_time[1:0] == 2'd2)     ref_buf_numbr = 2'd2;//#1 2121
+	@ (lfu_finder_01.access_time[5:4] == 2'd2);
+	@ (new_buf_req = 1)                            ref_buf_numbr = 2'd1;//#3 2321
+	@ (lfu_finder_01.access_time[3:2] == 2'd3);
+	@ (new_buf_req = 1)
 	
     #(CYCL*4) $finish;
 end
@@ -96,14 +109,25 @@ initial begin
 	@ (flag == 8'hFF);
 	@ (flag == 8'hFF);
 	@ (flag == 8'hFF);
-	@ (lfu_finder_01.access_time_0 == 2'd2)   new_buf_req = 1;
-	@ (lfu_finder_01.buf_num_replc == 2'd1)   new_buf_req = 0;
-	@ (lfu_finder_01.access_time_1 == 2'd2)   new_buf_req = 1;
-	@ (lfu_finder_01.buf_num_replc == 2'd2)   new_buf_req = 0;
-	@ (lfu_finder_01.access_time_1 == 2'd2)   new_buf_req = 1;
-	@ (lfu_finder_01.buf_num_replc == 2'd3)   new_buf_req = 0;
-	@ (lfu_finder_01.access_time_3 == 2'd2)   new_buf_req = 1;
-	@ (lfu_finder_01.buf_num_replc == 2'd0)   new_buf_req = 0;
+	@ (lfu_finder_01.access_time[1:0] == 2'd2)   new_buf_req = 1;//#1 2111
+	# CYCL                                       new_buf_req = 0;
+    @ (lfu_finder_01.access_time[3:2] == 2'd2)   new_buf_req = 1;//#2 2211
+	# CYCL                                       new_buf_req = 0;
+	@ (lfu_finder_01.access_time[5:4] == 2'd2)   new_buf_req = 1;//#3 2221
+	# CYCL                                       new_buf_req = 0;
+	@ (lfu_finder_01.access_time[7:6] == 2'd2)   new_buf_req = 1;//#0 2222
+	# CYCL                                       new_buf_req = 0;
+	@ (lfu_finder_01.access_time[1:0] == 2'd3)   new_buf_req = 1;//#1 3222
+	# CYCL                                       new_buf_req = 0;
+	@ (lfu_finder_01.access_time[7:6] == 2'd3)   new_buf_req = 1;//#2 3323
+	# CYCL                                       new_buf_req = 0;
+	@ (lfu_finder_01.access_time[5:4] == 2'd3)   new_buf_req = 1;//#0 3333
+	# CYCL                                       new_buf_req = 0;
+	@ (lfu_finder_01.access_time[5:4] == 2'd2)   new_buf_req = 1;//#1 2121
+	# CYCL                                       new_buf_req = 0;
+	@ (lfu_finder_01.access_time[3:2] == 2'd3)   new_buf_req = 1;//#1 2121
+	# CYCL                                       new_buf_req = 0;
+	
 	
 end
 endmodule
